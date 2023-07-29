@@ -6,7 +6,25 @@ networks:
     driver: bridge
 
 services:
-  postgres:
+  clown-id_app:
+    container_name: clown-id_app
+    image: clown-id
+    build: .
+    restart: always
+    volumes:
+      - ./configs:/app/configs
+    
+    ports:
+      - 80:8080 
+    networks:
+      - main
+
+    depends_on:
+      - clown-id_postgres
+
+    command: /app/bin/server
+    
+  clown-id_postgres:
     container_name: clown-id_postgres
     image: postgres:15.3-alpine3.18
     restart: always
@@ -22,4 +40,3 @@ services:
       - POSTGRES_DB=clown-id
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-

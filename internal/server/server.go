@@ -33,7 +33,6 @@ func (s *Server) Start() error {
 	if err := s.configureLogger(); err != nil {
 		return errors.New("Failed to configure logger: " + err.Error())
 	}
-
 	s.Logger.Info("Configuring routers...") //FIXME: Not implemented
 	//s.configureRouter() // routes.go
 
@@ -47,7 +46,6 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) configureLogger() error {
-	println(s.config.LogLevel)
 	level, err := logrus.ParseLevel(s.config.LogLevel)
 	if err != nil {
 		return err
