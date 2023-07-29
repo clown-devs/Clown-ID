@@ -19,7 +19,7 @@ services:
       - ./volumes/database:/var/lib/postgresql/data
     
     environment:
-      - POSTGRES_DB=sberdb
+      - POSTGRES_DB=clown-id
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 

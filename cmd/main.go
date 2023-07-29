@@ -2,6 +2,7 @@ package main
 
 import (
 	conf "clown-id/internal/config"
+	"clown-id/internal/server"
 	"encoding/json"
 	"flag"
 	"log"
@@ -32,11 +33,10 @@ func parseConfig() *conf.Config {
 
 func main() {
 	flag.Parse()
-	config := parseConfig()
-	print(config.BindAddr)
-	// s := server.New(parseConfig())
-	// err := s.Start()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+
+	s := server.New(parseConfig())
+	err := s.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
