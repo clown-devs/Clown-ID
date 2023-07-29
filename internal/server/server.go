@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	. "clown-id/internal/config"
+	conf "clown-id/internal/config"
 	"clown-id/internal/store"
 	"clown-id/internal/store/sqlstore"
 
@@ -13,13 +13,13 @@ import (
 )
 
 type Server struct {
-	config *Config
+	config *conf.Config
 	Logger *logrus.Logger
 	router *mux.Router
 	store  store.Store
 }
 
-func New(config *Config) *Server {
+func New(config *conf.Config) *Server {
 	return &Server{
 		config: config,
 		Logger: logrus.New(),
