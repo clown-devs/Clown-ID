@@ -1,0 +1,6 @@
+{
+    "bindAddr": ":8080", - default
+    "logLevel": "debug", (trace,debug, info, warn, error, fatal, panic)
+    "dbConnStr": "user=user password=password dbname=dbname sslmode=disable"
+    "salt": "SALTYSALT"
+}
