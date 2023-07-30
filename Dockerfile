@@ -1,9 +1,6 @@
-FROM golang:latest 
+FROM alpine:latest
 RUN mkdir /app 
 ADD . /app/ 
 WORKDIR /app
 
-RUN make check
-RUN make build
-
-CMD ["/app/bin/server"]
+CMD ["/app/bin/app"]

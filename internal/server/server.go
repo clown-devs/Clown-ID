@@ -34,7 +34,7 @@ func (s *Server) Start() error {
 		return errors.New("Failed to configure logger: " + err.Error())
 	}
 	s.Logger.Info("Configuring routers...") //FIXME: Not implemented
-	//s.configureRouter() // routes.go
+	s.configureRouter()                     // routes.go
 
 	s.Logger.Info("Configuring database...")
 	if err := s.configureStore(); err != nil {
@@ -43,6 +43,13 @@ func (s *Server) Start() error {
 
 	s.Logger.Info("Server started on port ", s.config.BindAddr)
 	return http.ListenAndServe(s.config.BindAddr, s.router)
+}
+
+func (s *Server) configureRouter() error {
+	s.router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello"))
+	})
+	return nil
 }
 
 func (s *Server) configureLogger() error {

@@ -1,10 +1,10 @@
 .PHONY: build, run, all, check
 
 build: 
-	go build  -o ./bin/server -v ./cmd/main.go 
+	go mod download && CGO_ENABLED=0 GOOS=linux go build -o ./bin/app ./cmd/main.go
 	
-run:
-	go run ./cmd/main.go
+run: check build
+	docker-compose up --remove-orphans --build 
 
 check:
 	go vet ./...

@@ -22,7 +22,7 @@ services:
     depends_on:
       - clown-id_postgres
 
-    command: /app/bin/server
+    command: /app/bin/app
     
   clown-id_postgres:
     container_name: clown-id_postgres
