@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	conf "clown-id/internal/config"
+	"clown-id/internal/handlers"
 	"clown-id/internal/store"
 	"clown-id/internal/store/sqlstore"
 
@@ -33,8 +34,8 @@ func (s *Server) Start() error {
 	if err := s.configureLogger(); err != nil {
 		return errors.New("Failed to configure logger: " + err.Error())
 	}
-	s.Logger.Info("Configuring routers...") //FIXME: Not implemented
-	s.configureRouter()                     // routes.go
+	s.Logger.Info("Configuring routers...")
+	s.configureRouter()
 
 	s.Logger.Info("Configuring database...")
 	if err := s.configureStore(); err != nil {
@@ -46,9 +47,9 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) configureRouter() error {
-	s.router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello"))
-	})
+	s.router = s.router.PathPrefix(s.config.ApiPrefix).Subrouter().StrictSlash(true)
+
+	handlers.RegisterHandlers(s.router, s.store)
 	return nil
 }
 

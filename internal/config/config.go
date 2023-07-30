@@ -7,6 +7,7 @@ type Config struct {
 	LogLevel  string `json:"logLevel"`
 	DbConnStr string `json:"dbConnStr"`
 	Salt      string `json:"salt"`
+	ApiPrefix string `json:"apiPrefix"`
 }
 
 func NewConfig() *Config {
