@@ -55,10 +55,9 @@ func (s *Server) Start() error {
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
 
-func (s *Server) configureRouter() error {
+func (s *Server) configureRouter() {
 	s.router = s.router.PathPrefix(s.config.ApiPrefix).Subrouter().StrictSlash(true)
 	handlers.RegisterHandlers(s.router, s.store)
-	return nil
 }
 
 func (s *Server) configureLogger() error {
