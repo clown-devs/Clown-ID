@@ -3,5 +3,6 @@
     "logLevel": "debug", (trace,debug, info, warn, error, fatal, panic)
     "dbConnStr": "user=user password=password port = 5432 host = localhost  dbname=some_dbname sslmode=disable"
     "salt": "SALTYSALT",
-    "apiPrefix": "/api/v1"
+    "apiPrefix": "/api/v1",
+    "swaggerEnabled": true
 }

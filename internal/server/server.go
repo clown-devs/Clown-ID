@@ -9,6 +9,10 @@ import (
 	"clown-id/internal/store"
 	"clown-id/internal/store/sqlstore"
 
+	swaggerDocs "clown-id/docs"
+
+	httpSwagger "github.com/swaggo/http-swagger"
+
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 )
@@ -42,13 +46,17 @@ func (s *Server) Start() error {
 		return errors.New("Failed to configure database: " + err.Error())
 	}
 
+	if s.config.SwaggerEnabled {
+		s.Logger.Info("Configuring OpenAPI docs...")
+		s.configureDocs()
+	}
+
 	s.Logger.Info("Server started on port ", s.config.BindAddr)
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
 
 func (s *Server) configureRouter() error {
 	s.router = s.router.PathPrefix(s.config.ApiPrefix).Subrouter().StrictSlash(true)
-
 	handlers.RegisterHandlers(s.router, s.store)
 	return nil
 }
@@ -73,4 +81,9 @@ func (s *Server) configureStore() error {
 	}
 	s.store = store
 	return nil
+}
+
+func (s *Server) configureDocs() {
+	s.router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
+	swaggerDocs.SwaggerInfo.BasePath = s.config.ApiPrefix
 }

@@ -31,6 +31,9 @@ func parseConfig() *conf.Config {
 	return config
 }
 
+// @title			Clown-ID API
+// @version			0.1
+// @description		Auth service for clown-devs projects
 func main() {
 	flag.Parse()
 
