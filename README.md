@@ -1,6 +1,7 @@
 ## OpenAPI generation
 Install swag
 > go install github.com/swaggo/swag/cmd/swag@latest
+
 Run code generation
 > make swagger-gen
 ```
