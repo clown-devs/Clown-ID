@@ -38,13 +38,14 @@ func (s *Server) Start() error {
 	if err := s.configureLogger(); err != nil {
 		return errors.New("Failed to configure logger: " + err.Error())
 	}
-	s.Logger.Info("Configuring routers...")
-	s.configureRouter()
 
 	s.Logger.Info("Configuring database...")
 	if err := s.configureStore(); err != nil {
 		return errors.New("Failed to configure database: " + err.Error())
 	}
+
+	s.Logger.Info("Configuring routers...")
+	s.configureRouter()
 
 	if s.config.SwaggerEnabled {
 		s.Logger.Info("Configuring OpenAPI docs...")

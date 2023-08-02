@@ -36,6 +36,27 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/login": {
+            "get": {
+                "description": "Возвращает json(будет описан позже)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Авторизация пользователя.",
+                "operationId": "auth-login",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
         }
     }
 }`

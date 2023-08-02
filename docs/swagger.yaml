@@ -18,4 +18,18 @@ paths:
       summary: Тестовый эндпоинт для проверки работы автодокументации
       tags:
       - Test
+  /login:
+    get:
+      description: Возвращает json(будет описан позже)
+      operationId: auth-login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+      summary: Авторизация пользователя.
+      tags:
+      - Auth
 swagger: "2.0"

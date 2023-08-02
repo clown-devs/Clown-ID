@@ -1,6 +1,7 @@
 package sqlstore
 
 import (
+	"clown-id/internal/store"
 	"database/sql"
 
 	_ "github.com/lib/pq"
@@ -8,6 +9,8 @@ import (
 
 type Store struct {
 	db *sql.DB
+
+	UserRepository *UserRepository
 }
 
 func New(connStr string) (*Store, error) {
@@ -21,4 +24,13 @@ func New(connStr string) (*Store, error) {
 	}
 
 	return &Store{db: db}, nil
+}
+
+func (s *Store) User() store.UserRepository {
+	if s.UserRepository == nil {
+		s.UserRepository = &UserRepository{
+			db: s.db,
+		}
+	}
+	return s.UserRepository
 }
