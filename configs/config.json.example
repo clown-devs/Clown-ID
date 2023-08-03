@@ -4,5 +4,6 @@
     "dbConnStr": "user=user password=password port = 5432 host = localhost  dbname=some_dbname sslmode=disable"
     "salt": "SALTYSALT",
     "apiPrefix": "/api/v1",
-    "swaggerEnabled": true
+    "swaggerEnabled": true,
+    "secret": "MY-SECRET-JWT-KEY"
 }

@@ -39,7 +39,7 @@ const docTemplate = `{
         },
         "/login": {
             "get": {
-                "description": "Возвращает json(будет описан позже)",
+                "description": "Возвращает пару токенов - access и refresh токен.",
                 "produces": [
                     "application/json"
                 ],

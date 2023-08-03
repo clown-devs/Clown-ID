@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"clown-id/internal/models"
 	"clown-id/internal/store"
 	"encoding/json"
 	"net/http"
@@ -8,13 +9,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func RegisterAuthHandlers(router *mux.Router, store store.Store) {
-	router.HandleFunc("/login/", handleLogin(store)).Methods("POST")
+func RegisterAuthHandlers(router *mux.Router, store store.Store, secret string) {
+	router.HandleFunc("/login/", handleLogin(store, secret)).Methods("POST")
+	router.HandleFunc("/register/", handleRegister(store)).Methods("POST")
 }
 
 // Login godoc
 // @Summary Авторизация пользователя.
-// @Description Возвращает json(будет описан позже)
+// @Description Возвращает пару токенов - access и refresh токен.
 // @Tags Auth
 // @ID auth-login
 // @Produce json
@@ -22,7 +24,7 @@ func RegisterAuthHandlers(router *mux.Router, store store.Store) {
 // @Success 200
 // @Failure 404
 // @Router /login [get]
-func handleLogin(store store.Store) http.HandlerFunc {
+func handleLogin(store store.Store, secret string) http.HandlerFunc {
 	type request struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -42,6 +44,33 @@ func handleLogin(store store.Store) http.HandlerFunc {
 			return
 		}
 
+		//refreshToken := uuid.New().String()
+
 		respond(w, r, http.StatusOK, user)
 	}
+}
+
+func handleRegister(store store.Store) http.HandlerFunc {
+	type request struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := &request{}
+		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		u := &models.User{Username: request.Username, Email: request.Email, Password: request.Password}
+		if err := store.User().Create(u); err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+		}
+
+		u.Sanitize()
+		respond(w, r, http.StatusOK, u)
+	}
+
 }

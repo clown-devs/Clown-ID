@@ -11,10 +11,10 @@ import (
 )
 
 // Middleware and handlers registering
-func RegisterHandlers(router *mux.Router, store store.Store) {
+func RegisterHandlers(router *mux.Router, store store.Store, secret string) {
 	router.Use(commonMiddleware)
-	RegisterAuthHandlers(router, store)
-	println("I'm registering!")
+	RegisterAuthHandlers(router, store, secret)
+
 	router.HandleFunc("/hello/", handleHello())
 }
 
@@ -33,7 +33,6 @@ func handleHello() http.HandlerFunc {
 	}
 }
 
-// consume only public errors
 func respondError(w http.ResponseWriter, r *http.Request, code int, err error) {
 	//TODO: Write logs
 	respond(w, r, code, map[string]string{"error": err.Error(), "code": fmt.Sprint(code)})

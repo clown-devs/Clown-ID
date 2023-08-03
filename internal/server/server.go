@@ -52,13 +52,13 @@ func (s *Server) Start() error {
 		s.configureDocs()
 	}
 
-	s.Logger.Info("Server started on port ", s.config.BindAddr)
+	s.Logger.Info("Server started on: ", s.config.ApiPrefix+s.config.BindAddr)
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
 
 func (s *Server) configureRouter() {
 	s.router = s.router.PathPrefix(s.config.ApiPrefix).Subrouter().StrictSlash(true)
-	handlers.RegisterHandlers(s.router, s.store)
+	handlers.RegisterHandlers(s.router, s.store, s.config.Secret)
 }
 
 func (s *Server) configureLogger() error {

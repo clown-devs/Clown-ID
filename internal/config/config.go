@@ -9,6 +9,7 @@ type Config struct {
 	Salt           string `json:"salt"`
 	ApiPrefix      string `json:"apiPrefix"`
 	SwaggerEnabled bool   `json:"swaggerEnabled"`
+	Secret         string `json:"secret"`
 }
 
 func NewConfig() *Config {

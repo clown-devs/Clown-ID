@@ -20,7 +20,7 @@ paths:
       - Test
   /login:
     get:
-      description: Возвращает json(будет описан позже)
+      description: Возвращает пару токенов - access и refresh токен.
       operationId: auth-login
       produces:
       - application/json
