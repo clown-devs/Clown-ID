@@ -52,7 +52,7 @@ func (s *Server) Start() error {
 		s.configureDocs()
 	}
 
-	s.Logger.Info("Server started on: ", s.config.ApiPrefix+s.config.BindAddr)
+	s.Logger.Info("Server started on: ", s.config.ApiPrefix+" "+s.config.BindAddr)
 	return http.ListenAndServe(s.config.BindAddr, s.router)
 }
 

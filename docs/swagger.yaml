@@ -20,7 +20,7 @@ paths:
       - Test
   /login:
     get:
-      description: Возвращает пару токенов - access и refresh токен.
+      description: Возвращает пару токенов - access и refresh токен или json с ошибкой
       operationId: auth-login
       produces:
       - application/json
@@ -29,7 +29,7 @@ paths:
           description: OK
         "404":
           description: Not Found
-      summary: Авторизация пользователя.
+      summary: Аутентификация пользователя по логину и паролю
       tags:
       - Auth
 swagger: "2.0"

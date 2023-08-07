@@ -15,8 +15,8 @@ func RegisterAuthHandlers(router *mux.Router, store store.Store, secret string) 
 }
 
 // Login godoc
-// @Summary Авторизация пользователя.
-// @Description Возвращает пару токенов - access и refresh токен.
+// @Summary Аутентификация пользователя по логину и паролю
+// @Description Возвращает пару токенов - access и refresh токен или json с ошибкой
 // @Tags Auth
 // @ID auth-login
 // @Produce json
@@ -59,6 +59,7 @@ func handleRegister(store store.Store) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		request := &request{}
+
 		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
 			respondError(w, r, http.StatusBadRequest, err)
 			return
@@ -67,6 +68,7 @@ func handleRegister(store store.Store) http.HandlerFunc {
 		u := &models.User{Username: request.Username, Email: request.Email, Password: request.Password}
 		if err := store.User().Create(u); err != nil {
 			respondError(w, r, http.StatusBadRequest, err)
+			return
 		}
 
 		u.Sanitize()

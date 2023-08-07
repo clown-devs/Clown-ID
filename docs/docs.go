@@ -39,14 +39,14 @@ const docTemplate = `{
         },
         "/login": {
             "get": {
-                "description": "Возвращает пару токенов - access и refresh токен.",
+                "description": "Возвращает пару токенов - access и refresh токен или json с ошибкой",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Авторизация пользователя.",
+                "summary": "Аутентификация пользователя по логину и паролю",
                 "operationId": "auth-login",
                 "responses": {
                     "200": {
