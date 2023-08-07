@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"clown-id/internal/store"
@@ -33,9 +32,14 @@ func handleHello() http.HandlerFunc {
 	}
 }
 
+type HttpErrorResponse struct {
+	Code  int    `json:"code" example:"400"`
+	Error string `json:"error" example:"something went wrong..."`
+}
+
 func respondError(w http.ResponseWriter, r *http.Request, code int, err error) {
 	//TODO: Write logs
-	respond(w, r, code, map[string]string{"error": err.Error(), "code": fmt.Sprint(code)})
+	respond(w, r, code, HttpErrorResponse{code, err.Error()})
 }
 
 func respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) {

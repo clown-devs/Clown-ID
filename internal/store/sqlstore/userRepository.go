@@ -20,10 +20,6 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 }
 
 func (r *UserRepository) Create(u *models.User) error {
-	if err := u.Validate(); err != nil {
-		return err
-	}
-
 	if err := u.BeforeCreate(); err != nil {
 		return err
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,19 +16,23 @@ type User struct {
 	EncryptedPassword string `json:"-"`
 }
 
+// Validate user public information
 func (u *User) Validate() error {
-	if err := validation.ValidateStruct(u,
+	return validation.ValidateStruct(u,
 		validation.Field(&u.Username, validation.Required),
-		validation.Field(&u.ID, validation.Required),
-	); err != nil {
+		validation.Field(&u.Email, validation.Required, is.Email),
+	)
+}
+
+// Check public fields and password
+func (u *User) BeforeCreate() error {
+	if err := u.Validate(); err != nil {
+		return err
+	}
+	if err := u.CheckPassword(); err != nil {
 		return err
 	}
 
-	err := u.CheckPassword()
-	return err
-}
-
-func (u *User) BeforeCreate() error {
 	encrypted, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.MinCost)
 	u.EncryptedPassword = string(encrypted)
 	return err
@@ -40,11 +45,11 @@ func (u *User) Sanitize() {
 // returns nil if password is ok. Else - error
 func (u *User) CheckPassword() error {
 	if u.Password == "" {
-		return fmt.Errorf("password is empty")
+		return fmt.Errorf("password: is empty")
 	}
 
 	if len(u.Password) < 6 {
-		return fmt.Errorf("password len is less than 6")
+		return fmt.Errorf("password: length is less than 6")
 	}
 
 	return nil

@@ -28,7 +28,7 @@
                 }
             }
         },
-        "/login": {
+        "/login/": {
             "get": {
                 "description": "Возвращает пару токенов - access и refresh токен или json с ошибкой",
                 "produces": [
@@ -46,6 +46,100 @@
                     "404": {
                         "description": "Not Found"
                     }
+                }
+            }
+        },
+        "/register/": {
+            "post": {
+                "description": "Принимает json с пользователем.\nВозвращает либо созданного пользователя либо json с ошибкой.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Регистрация пользователя.",
+                "operationId": "auth-register",
+                "parameters": [
+                    {
+                        "description": "json пользователя",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/examples.CreateUserExample"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/examples.PublicUserExample"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HttpErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "examples.CreateUserExample": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "aboba@gmail.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "aboba32"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "aboba"
+                }
+            }
+        },
+        "examples.PublicUserExample": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "aboba@gmail.com"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "aboba"
+                }
+            }
+        },
+        "handlers.HttpErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "error": {
+                    "type": "string",
+                    "example": "something went wrong..."
                 }
             }
         }

@@ -1,3 +1,40 @@
+definitions:
+  examples.CreateUserExample:
+    properties:
+      email:
+        example: aboba@gmail.com
+        type: string
+      id:
+        example: "1"
+        type: string
+      password:
+        example: aboba32
+        type: string
+      username:
+        example: aboba
+        type: string
+    type: object
+  examples.PublicUserExample:
+    properties:
+      email:
+        example: aboba@gmail.com
+        type: string
+      id:
+        example: "1"
+        type: string
+      username:
+        example: aboba
+        type: string
+    type: object
+  handlers.HttpErrorResponse:
+    properties:
+      code:
+        example: 400
+        type: integer
+      error:
+        example: something went wrong...
+        type: string
+    type: object
 info:
   contact: {}
   description: Auth service for clown-devs projects
@@ -18,7 +55,7 @@ paths:
       summary: Тестовый эндпоинт для проверки работы автодокументации
       tags:
       - Test
-  /login:
+  /login/:
     get:
       description: Возвращает пару токенов - access и refresh токен или json с ошибкой
       operationId: auth-login
@@ -30,6 +67,35 @@ paths:
         "404":
           description: Not Found
       summary: Аутентификация пользователя по логину и паролю
+      tags:
+      - Auth
+  /register/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Принимает json с пользователем.
+        Возвращает либо созданного пользователя либо json с ошибкой.
+      operationId: auth-register
+      parameters:
+      - description: json пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/examples.CreateUserExample'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/examples.PublicUserExample'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.HttpErrorResponse'
+      summary: Регистрация пользователя.
       tags:
       - Auth
 swagger: "2.0"

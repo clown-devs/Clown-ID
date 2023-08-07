@@ -23,7 +23,7 @@ func RegisterAuthHandlers(router *mux.Router, store store.Store, secret string) 
 // @Consume json
 // @Success 200
 // @Failure 404
-// @Router /login [get]
+// @Router /login/ [get]
 func handleLogin(store store.Store, secret string) http.HandlerFunc {
 	type request struct {
 		Email    string `json:"email"`
@@ -50,6 +50,18 @@ func handleLogin(store store.Store, secret string) http.HandlerFunc {
 	}
 }
 
+// Register godoc
+// @Summary Регистрация пользователя.
+// @Description Принимает json с пользователем.
+// @Description Возвращает либо созданного пользователя либо json с ошибкой.
+// @Tags Auth
+// @ID auth-register
+// @Accept json
+// @Produce json
+// @Param user body examples.CreateUserExample true "json пользователя"
+// @Success 200 {object} examples.PublicUserExample
+// @Failure 400	{object} HttpErrorResponse
+// @Router /register/ [post]
 func handleRegister(store store.Store) http.HandlerFunc {
 	type request struct {
 		Username string `json:"username"`
