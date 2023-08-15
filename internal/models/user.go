@@ -9,10 +9,10 @@ import (
 )
 
 type User struct {
-	ID                string `json:"id"`
-	Username          string `json:"username"`
-	Email             string `json:"email"`
-	Password          string `json:"password,omitempty"`
+	ID                string `json:"id" example:"107"`
+	Username          string `json:"username" example:"aboba"`
+	Email             string `json:"email" example:"aboba@gmail.com"`
+	Password          string `json:"password,omitempty" swaggerignore:"true"`
 	EncryptedPassword string `json:"-"`
 }
 
@@ -22,6 +22,11 @@ func (u *User) Validate() error {
 		validation.Field(&u.Username, validation.Required),
 		validation.Field(&u.Email, validation.Required, is.Email),
 	)
+}
+
+// check password, if password ok returns true
+func (u *User) ComparePassword(password string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password)) == nil
 }
 
 // Check public fields and password
@@ -38,7 +43,7 @@ func (u *User) BeforeCreate() error {
 	return err
 }
 
-func (u *User) Sanitize() {
+func (u *User) BeforeSending() {
 	u.Password = ""
 }
 

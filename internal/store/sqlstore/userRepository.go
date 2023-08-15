@@ -19,6 +19,10 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	return r.findByField("email", email)
 }
 
+func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
+	return r.findByField("username", username)
+}
+
 func (r *UserRepository) Create(u *models.User) error {
 	if err := u.BeforeCreate(); err != nil {
 		return err
@@ -41,7 +45,7 @@ func (r *UserRepository) findByField(fieldName, fieldValue string) (*models.User
 		&user.ID,
 		&user.Username,
 		&user.Email,
-		&user.Password)
+		&user.EncryptedPassword)
 
 	if err != nil {
 		return nil, err

@@ -14,22 +14,6 @@ func RegisterHandlers(router *mux.Router, store store.Store, secret string) {
 	router.Use(commonMiddleware)
 	RegisterAuthHandlers(router, store, secret)
 
-	router.HandleFunc("/hello/", handleHello())
-}
-
-// handleHello godoc
-// @Summary Тестовый эндпоинт для проверки работы автодокументации
-// @Description Возвращает json "hello world"
-// @Tags Test
-// @ID hello
-// @Produce json
-// @Success 200
-// @Failure 404
-// @Router /hello [get]
-func handleHello() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		respond(w, r, http.StatusOK, map[string]string{"hello": "world"})
-	}
 }
 
 type HttpErrorResponse struct {

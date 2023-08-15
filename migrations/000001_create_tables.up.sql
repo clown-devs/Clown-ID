@@ -19,12 +19,11 @@ CREATE TABLE clients (
 );
 
 CREATE TABLE refresh_tokens (
-    id SERIAL PRIMARY KEY,
+    token VARCHAR(128) PRIMARY KEY,
     app_id INTEGER NOT NULL,
     client_id INTEGER NOT NULL,
-    expires_at TIMESTAMP NOT NULL,
-    token VARCHAR(128) UNIQUE NOT NULL,
-
+    expires_at BIGINT NOT NULL,
+    UNIQUE (app_id, client_id),
     CONSTRAINT fk_app
         FOREIGN KEY (app_id) 
         REFERENCES apps(id) 
@@ -33,7 +32,8 @@ CREATE TABLE refresh_tokens (
     CONSTRAINT fk_client
         FOREIGN KEY (client_id)
         REFERENCES clients(id)
-        ON DELETE CASCADE 
+        ON DELETE CASCADE
+    
 );
 
 INSERT INTO apps(name) VALUES ('clown-space');
