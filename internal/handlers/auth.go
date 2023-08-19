@@ -1,20 +1,21 @@
 package handlers
 
 import (
+	"clown-id/internal/jwt"
 	"clown-id/internal/models"
 	"clown-id/internal/store"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 )
 
 func RegisterAuthHandlers(router *mux.Router, store store.Store, secret string) {
-	router.HandleFunc("/login/", handleLogin(store, secret)).Methods("POST")
 	router.HandleFunc("/register/", handleRegister(store)).Methods("POST")
+	router.HandleFunc("/login/", handleLogin(store, secret)).Methods("POST")
+	router.HandleFunc("/refresh/", handleRefreshToken(store, secret)).Methods("POST")
+	router.HandleFunc("/logout/", handleLogout(store, secret)).Methods("POST")
 }
 
 type HandleLoginRequest struct {
@@ -23,10 +24,6 @@ type HandleLoginRequest struct {
 	Password string `json:"password" example:"qwerty123456"`
 	AppId    string `json:"app_id" example:"1"`
 	ClientId string `json:"client_id" example:"1"`
-}
-
-type HandleLoginResponse struct {
-	RefreshToken models.RefreshToken `json:"refresh_token"`
 }
 
 // Login godoc
@@ -39,7 +36,7 @@ type HandleLoginResponse struct {
 // @Produce json
 // @Consume json
 // @Param Request body HandleLoginRequest true "json запроса:"
-// @Success 200 {object} HandleLoginResponse
+// @Success 200 {object} jwt.TokenPair
 // @Failure 400	{object} HttpErrorResponse
 // @Router /login/ [post]
 func handleLogin(store store.Store, secret string) http.HandlerFunc {
@@ -77,21 +74,79 @@ func handleLogin(store store.Store, secret string) http.HandlerFunc {
 			return
 		}
 
-		// TODO: check if app id and client id exists (maybe in repository?)
-		refreshToken := models.RefreshToken{
-			Token:     uuid.New().String(),
-			AppId:     req.AppId,
-			ClientId:  req.ClientId,
-			ExpiresAt: time.Now().AddDate(0, 1, 0).Unix(), // one month
-			UserId:    user.ID,
-		}
-		
-		
-		if err := store.Token().Create(&refreshToken); err != nil {
-			respondError(w, r, http.StatusInternalServerError, err)
+		tokenPair, err := jwt.IssueTokenPair(store, user, req.AppId, req.ClientId, secret)
+		if err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
 		}
 
-		respond(w, r, http.StatusOK, HandleLoginResponse{refreshToken})
+		respond(w, r, http.StatusOK, tokenPair)
+	}
+}
+
+type HandleRefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token" example:"07b7f432-7414-4340-890d-0376e46f1a00"`
+}
+
+// Register godoc
+// @Summary Обновление JWT токена.
+// @Description Принимает json с refresh-токеном.
+// @Description Возвращает либо json с парой access-refresh токенами, либо ошибку.
+// @Tags Auth
+// @ID auth-refresh
+// @Accept json
+// @Produce json
+// @Param Request body HandleRefreshTokenRequest true "json запроса:"
+// @Success 200 {object} jwt.TokenPair
+// @Failure 400	{object} HttpErrorResponse
+// @Router /refresh/ [post]
+func handleRefreshToken(store store.Store, secret string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := &HandleRefreshTokenRequest{}
+
+		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		tokenPair, err := jwt.IssueByRefreshToken(request.RefreshToken, store, secret)
+		if err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
+		}
+		respond(w, r, http.StatusOK, tokenPair)
+
+	}
+}
+
+// Register godoc
+// @Summary Выход из аккаунта.
+// @Description Принимает json с refresh-токеном.
+// @Description Удаляет токен из базы данных. Либо ничего не возвращает, либо возвращает ошибку
+// @Tags Auth
+// @ID auth-logout
+// @Accept json
+// @Produce json
+// @Param Request body HandleRefreshTokenRequest true "json запроса:"
+// @Success 200 {string} OK
+// @Failure 400	{object} HttpErrorResponse
+// @Router /logout/ [post]
+func handleLogout(store store.Store, secret string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := &HandleRefreshTokenRequest{}
+
+		if err := json.NewDecoder(r.Body).Decode(request); err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		if err := store.Token().Delete(request.RefreshToken); err != nil {
+			respondError(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		respond(w, r, http.StatusOK, "OK!")
+
 	}
 }
 

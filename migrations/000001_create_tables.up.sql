@@ -20,10 +20,17 @@ CREATE TABLE clients (
 
 CREATE TABLE refresh_tokens (
     token VARCHAR(128) PRIMARY KEY,
+    user_id INTEGER NOT NULL,
     app_id INTEGER NOT NULL,
     client_id INTEGER NOT NULL,
     expires_at BIGINT NOT NULL,
-    UNIQUE (app_id, client_id),
+    UNIQUE (user_id, app_id, client_id),
+
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    
     CONSTRAINT fk_app
         FOREIGN KEY (app_id) 
         REFERENCES apps(id) 

@@ -2,10 +2,9 @@
 
 build: 
 	go mod download && CGO_ENABLED=0 GOOS=linux go build -o ./bin/app ./cmd/main.go
-	
-run: check swagger-gen build
-	docker-compose up --remove-orphans
 
+start:
+	docker-compose up --remove-orphans
 
 check:
 	go vet ./...
@@ -13,5 +12,6 @@ check:
 swagger-gen:
 	swag init -g  ./cmd/main.go
 
-
+run: check swagger-gen build start
+	
 .DEFAULT_GOAL := run

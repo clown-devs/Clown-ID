@@ -18,10 +18,11 @@ definitions:
         example: aboba
         type: string
     type: object
-  handlers.HandleLoginResponse:
+  handlers.HandleRefreshTokenRequest:
     properties:
       refresh_token:
-        $ref: '#/definitions/models.RefreshToken'
+        example: 07b7f432-7414-4340-890d-0376e46f1a00
+        type: string
     type: object
   handlers.HandleRegisterRequest:
     properties:
@@ -44,23 +45,13 @@ definitions:
         example: something went wrong...
         type: string
     type: object
-  models.RefreshToken:
+  jwt.TokenPair:
     properties:
-      app_id:
-        example: "1"
+      access_token:
+        example: eyJhbGciJ9.eyX0228.LQpEZvladOSc
         type: string
-      client_id:
-        example: "1"
-        type: string
-      expires_at:
-        description: unixtime
-        example: 1691407740
-        type: integer
-      token:
-        example: 550e8400-e29b-41d4-a716-446655440000
-        type: string
-      user_id:
-        example: "1"
+      refresh_token:
+        example: ea7f64d0-9e7a-41ac-a9a3-ca27ee71434f
         type: string
     type: object
   models.User:
@@ -101,12 +92,70 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handlers.HandleLoginResponse'
+            $ref: '#/definitions/jwt.TokenPair'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/handlers.HttpErrorResponse'
       summary: Аутентификация пользователя по логину или email и паролю
+      tags:
+      - Auth
+  /logout/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Принимает json с refresh-токеном.
+        Удаляет токен из базы данных. Либо ничего не возвращает, либо возвращает ошибку
+      operationId: auth-logout
+      parameters:
+      - description: 'json запроса:'
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.HandleRefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.HttpErrorResponse'
+      summary: Выход из аккаунта.
+      tags:
+      - Auth
+  /refresh/:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Принимает json с refresh-токеном.
+        Возвращает либо json с парой access-refresh токенами, либо ошибку.
+      operationId: auth-refresh
+      parameters:
+      - description: 'json запроса:'
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.HandleRefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/jwt.TokenPair'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.HttpErrorResponse'
+      summary: Обновление JWT токена.
       tags:
       - Auth
   /register/:

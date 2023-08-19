@@ -42,7 +42,89 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handlers.HandleLoginResponse"
+                            "$ref": "#/definitions/jwt.TokenPair"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HttpErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/logout/": {
+            "post": {
+                "description": "Принимает json с refresh-токеном.\nУдаляет токен из базы данных. Либо ничего не возвращает, либо возвращает ошибку",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Выход из аккаунта.",
+                "operationId": "auth-logout",
+                "parameters": [
+                    {
+                        "description": "json запроса:",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HandleRefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HttpErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh/": {
+            "post": {
+                "description": "Принимает json с refresh-токеном.\nВозвращает либо json с парой access-refresh токенами, либо ошибку.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Обновление JWT токена.",
+                "operationId": "auth-refresh",
+                "parameters": [
+                    {
+                        "description": "json запроса:",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HandleRefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/jwt.TokenPair"
                         }
                     },
                     "400": {
@@ -123,11 +205,12 @@ const docTemplate = `{
                 }
             }
         },
-        "handlers.HandleLoginResponse": {
+        "handlers.HandleRefreshTokenRequest": {
             "type": "object",
             "properties": {
                 "refresh_token": {
-                    "$ref": "#/definitions/models.RefreshToken"
+                    "type": "string",
+                    "example": "07b7f432-7414-4340-890d-0376e46f1a00"
                 }
             }
         },
@@ -161,29 +244,16 @@ const docTemplate = `{
                 }
             }
         },
-        "models.RefreshToken": {
+        "jwt.TokenPair": {
             "type": "object",
             "properties": {
-                "app_id": {
+                "access_token": {
                     "type": "string",
-                    "example": "1"
+                    "example": "eyJhbGciJ9.eyX0228.LQpEZvladOSc"
                 },
-                "client_id": {
+                "refresh_token": {
                     "type": "string",
-                    "example": "1"
-                },
-                "expires_at": {
-                    "description": "unixtime",
-                    "type": "integer",
-                    "example": 1691407740
-                },
-                "token": {
-                    "type": "string",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "user_id": {
-                    "type": "string",
-                    "example": "1"
+                    "example": "ea7f64d0-9e7a-41ac-a9a3-ca27ee71434f"
                 }
             }
         },
