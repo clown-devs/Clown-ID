@@ -54,6 +54,24 @@ definitions:
         example: ea7f64d0-9e7a-41ac-a9a3-ca27ee71434f
         type: string
     type: object
+  models.Application:
+    properties:
+      id:
+        example: "1"
+        type: string
+      name:
+        example: clown-space
+        type: string
+    type: object
+  models.Client:
+    properties:
+      id:
+        example: "1"
+        type: string
+      name:
+        example: android
+        type: string
+    type: object
   models.User:
     properties:
       email:
@@ -72,6 +90,39 @@ info:
   title: Clown-ID API
   version: "0.1"
 paths:
+  /apps:
+    get:
+      description: Возвращает json со списком приложений зарегистрированных в этом
+        сервисе.
+      operationId: auth-apps
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Application'
+            type: array
+      summary: Получение списка приложений.
+      tags:
+      - Clients
+  /clients:
+    get:
+      description: Возвращает json со списком возможных клиентов.
+      operationId: auth-clients
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Client'
+            type: array
+      summary: Получение списка клиентов.
+      tags:
+      - Clients
   /login/:
     post:
       description: |-

@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-
-	validation "github.com/go-ozzo/ozzo-validation"
 )
 
 type RefreshToken struct {
@@ -16,26 +14,4 @@ type RefreshToken struct {
 
 func (token RefreshToken) IsExpired() bool {
 	return token.ExpiresAt <= time.Now().Unix()
-}
-
-type Application struct {
-	ID   string `json:"id" example:"1"`
-	Name string `json:"name" example:"clown-space"`
-}
-
-type Client struct {
-	ID   string `json:"id" example:"1"`
-	Name string `json:"name" example:"android"`
-}
-
-func (app *Application) Validate() error {
-	return validation.ValidateStruct(app,
-		validation.Field(&app.Name, validation.Required),
-	)
-}
-
-func (client *Client) Validate() error {
-	return validation.ValidateStruct(client,
-		validation.Field(&client.Name, validation.Required),
-	)
 }

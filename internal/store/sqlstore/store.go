@@ -10,8 +10,9 @@ import (
 type Store struct {
 	db *sql.DB
 
-	UserRepository  *UserRepository
-	TokenRepository *TokenRepository
+	UserRepository   *UserRepository
+	TokenRepository  *TokenRepository
+	ClientRepository *ClientRepository
 }
 
 func New(connStr string) (*Store, error) {
@@ -43,4 +44,13 @@ func (s *Store) Token() store.TokenRepository {
 		}
 	}
 	return s.TokenRepository
+}
+
+func (s *Store) Client() store.ClientRepository {
+	if s.ClientRepository == nil {
+		s.ClientRepository = &ClientRepository{
+			db: s.db,
+		}
+	}
+	return s.ClientRepository
 }

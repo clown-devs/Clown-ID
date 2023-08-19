@@ -14,3 +14,8 @@ type TokenRepository interface {
 	Create(*models.RefreshToken) error
 	Delete(string) error
 }
+
+type ClientRepository interface {
+	AllApps() ([]models.Application, error)
+	AllClients() ([]models.Client, error)
+}

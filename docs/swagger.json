@@ -7,6 +7,54 @@
         "version": "0.1"
     },
     "paths": {
+        "/apps": {
+            "get": {
+                "description": "Возвращает json со списком приложений зарегистрированных в этом сервисе.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Получение списка приложений.",
+                "operationId": "auth-apps",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Application"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clients": {
+            "get": {
+                "description": "Возвращает json со списком возможных клиентов.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Clients"
+                ],
+                "summary": "Получение списка клиентов.",
+                "operationId": "auth-clients",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Client"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/login/": {
             "post": {
                 "description": "Необходим либо логин, либо email.\nВ случае, если предоставлены оба поля приоритет будет у логина.\nВозвращает пару токенов - access и refresh токен или json с ошибкой",
@@ -245,6 +293,32 @@
                 "refresh_token": {
                     "type": "string",
                     "example": "ea7f64d0-9e7a-41ac-a9a3-ca27ee71434f"
+                }
+            }
+        },
+        "models.Application": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "clown-space"
+                }
+            }
+        },
+        "models.Client": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "android"
                 }
             }
         },

@@ -13,6 +13,7 @@ import (
 func RegisterHandlers(router *mux.Router, store store.Store, secret string) {
 	router.Use(commonMiddleware)
 	RegisterAuthHandlers(router, store, secret)
+	RegisterClientHandlers(router, store, secret)
 
 }
 
