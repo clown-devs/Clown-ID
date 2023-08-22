@@ -6,6 +6,7 @@ type Config struct {
 	BindAddr       string `json:"bindAddr"`
 	LogLevel       string `json:"logLevel"`
 	DbConnStr      string `json:"dbConnStr"`
+	MigrationStr   string `json:"migrationStr"`
 	Salt           string `json:"salt"`
 	ApiPrefix      string `json:"apiPrefix"`
 	SwaggerEnabled bool   `json:"swaggerEnabled"`

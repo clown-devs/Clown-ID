@@ -4,6 +4,9 @@ import (
 	"clown-id/internal/store"
 	"database/sql"
 
+	"github.com/golang-migrate/migrate"
+	_ "github.com/golang-migrate/migrate/database/postgres"
+	_ "github.com/golang-migrate/migrate/source/file"
 	_ "github.com/lib/pq"
 )
 
@@ -15,13 +18,25 @@ type Store struct {
 	ClientRepository *ClientRepository
 }
 
-func New(connStr string) (*Store, error) {
+func New(connStr, migrationStr string) (*Store, error) {
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
 	}
 
 	if err := db.Ping(); err != nil { // database ping
+		return nil, err
+	}
+
+	m, err := migrate.New(
+		"file://migrations",
+		migrationStr,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
 		return nil, err
 	}
 

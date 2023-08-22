@@ -2,3 +2,4 @@ bin
 config.json
 volumes
 todo.txt
+.DS_Store

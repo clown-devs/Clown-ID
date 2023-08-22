@@ -75,7 +75,7 @@ func (s *Server) configureLogger() error {
 }
 
 func (s *Server) configureStore() error {
-	store, err := sqlstore.New(s.config.DbConnStr)
+	store, err := sqlstore.New(s.config.DbConnStr, s.config.MigrationStr)
 	if err != nil {
 		return err
 	}

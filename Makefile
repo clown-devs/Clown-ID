@@ -12,6 +12,7 @@ check:
 swagger-gen:
 	swag init -g  ./cmd/main.go
 
-run: check swagger-gen build start
-	
+run: check build start
+
+run-with-swag: run swagger-gen
 .DEFAULT_GOAL := run
