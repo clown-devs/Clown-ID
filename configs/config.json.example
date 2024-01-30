@@ -1,7 +1,8 @@
 {
     "bindAddr": ":8080", - default
     "logLevel": "debug", (trace,debug, info, warn, error, fatal, panic)
-    "dbConnStr": "user=user password=password port = 5432 host = localhost  dbname=some_dbname sslmode=disable"
+    "dbConnStr": "user=user password=password port = 5432 host = localhost  dbname=some_dbname sslmode=disable",
+    "migrationStr": "postgres://**login**:**password**@clown-id_postgres/**dbname**?sslmode=disable",
     "salt": "SALTYSALT",
     "apiPrefix": "/api/v1",
     "swaggerEnabled": true,
